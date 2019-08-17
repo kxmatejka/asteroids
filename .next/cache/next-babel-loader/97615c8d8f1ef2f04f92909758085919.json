@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { Home } from '../src/pages';\nexport default Home;","map":{"version":3,"sources":["/home/ubuntu/Git/asteroids/pages/index.tsx"],"names":["Home"],"mappings":"AAAA,SAAQA,IAAR,QAAmB,cAAnB;AAEA,eAAeA,IAAf","sourcesContent":["import {Home} from '../src/pages'\n\nexport default Home\n"]},"metadata":{},"sourceType":"module"}
