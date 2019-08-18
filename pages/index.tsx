@@ -1,3 +1,3 @@
-import {Home} from '../src/pages'
+import {Game} from '../src/pages'
 
-export default Home
+export default Game
