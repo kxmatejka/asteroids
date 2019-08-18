@@ -43,7 +43,9 @@ const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingCont
     x + Math.cos(Math.PI - angle) * radius,
     y + Math.sin(Math.PI - angle) * radius
   )
-  ctx.lineTo(
+  ctx.quadraticCurveTo(
+    x,
+    y + radius * 0.25,
     x + Math.cos(angle) * radius,
     y + Math.sin(angle) * radius
   )
