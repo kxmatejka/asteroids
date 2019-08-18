@@ -7,7 +7,7 @@ const drawBackground = (width: number, height: number, ctx: CanvasRenderingConte
 
 const drawGrid = (width: number, height: number, ctx: CanvasRenderingContext2D) => {
   const step = 20
-  ctx.strokeStyle = '#57ff00'
+  ctx.strokeStyle = '#0f0'
 
   for (let x = 0; x < width; x += step) {
     ctx.beginPath()
@@ -39,6 +39,19 @@ export const Game = () => {
     drawBackground(width, height, ctx)
     drawGrid(width, height, ctx)
 
+    // paths
+    ctx.beginPath()
+    ctx.fillStyle = '#0f0'
+    ctx.lineWidth = 2
+    ctx.moveTo(60, 60)
+    ctx.lineTo(180, 300)
+    ctx.lineTo(300, 180)
+    ctx.stroke()
+    // labels
+    ctx.fillText('(60, 60)', 65, 55)
+    ctx.fillText('(180, 300)', 185, 315)
+    ctx.fillText('(300, 180)', 305, 195)
+    ctx.fill()
   }, [])
 
   return (
