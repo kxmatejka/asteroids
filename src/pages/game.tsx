@@ -26,6 +26,32 @@ const drawGrid = (width: number, height: number, ctx: CanvasRenderingContext2D) 
   }
 }
 
+const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingContext2D) => {
+  ctx.beginPath()
+  ctx.lineWidth = 0.5
+  ctx.fillStyle = '#0f0'
+  ctx.arc(x, y, radius, 0, 2 * Math.PI)
+  ctx.stroke()
+
+  const angle = 45 * Math.PI / 180 // Math.PI * 0.25
+
+  ctx.beginPath()
+  ctx.lineWidth = 2
+  ctx.fillStyle = '#0f0'
+  ctx.moveTo(x, y - radius)
+  ctx.lineTo(
+    x + Math.cos(Math.PI - angle) * radius,
+    y + Math.sin(Math.PI - angle) * radius
+  )
+  ctx.lineTo(
+    x + Math.cos(angle) * radius,
+    y + Math.sin(angle) * radius
+  )
+  ctx.closePath()
+  ctx.stroke()
+  ctx.fill()
+}
+
 export const Game = () => {
   const canvas = useRef(null)
 
@@ -38,20 +64,7 @@ export const Game = () => {
 
     drawBackground(width, height, ctx)
     drawGrid(width, height, ctx)
-
-    // paths
-    ctx.beginPath()
-    ctx.fillStyle = '#0f0'
-    ctx.lineWidth = 2
-    ctx.moveTo(60, 60)
-    ctx.lineTo(180, 300)
-    ctx.lineTo(300, 180)
-    ctx.stroke()
-    // labels
-    ctx.fillText('(60, 60)', 65, 55)
-    ctx.fillText('(180, 300)', 185, 315)
-    ctx.fillText('(300, 180)', 305, 195)
-    ctx.fill()
+    drawShip(240, 240, 150, ctx)
   }, [])
 
   return (
