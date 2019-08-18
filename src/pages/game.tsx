@@ -52,6 +52,12 @@ const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingCont
   ctx.fill()
 }
 
+const rotateCanvas = (angle: number, ctx: CanvasRenderingContext2D) => {
+  ctx.translate(240,240)
+  ctx.rotate(angle)
+  ctx.translate(-240,-240)
+}
+
 export const Game = () => {
   const canvas = useRef(null)
 
@@ -64,6 +70,8 @@ export const Game = () => {
 
     drawBackground(width, height, ctx)
     drawGrid(width, height, ctx)
+
+    rotateCanvas(Math.PI * 0.25, ctx)
     drawShip(240, 240, 150, ctx)
   }, [])
 
