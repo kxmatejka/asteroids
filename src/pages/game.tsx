@@ -39,7 +39,9 @@ const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingCont
   ctx.lineWidth = 2
   ctx.fillStyle = '#0f0'
   ctx.moveTo(x, y - radius)
-  ctx.lineTo(
+  ctx.quadraticCurveTo(
+    x - radius * 0.6,
+    y - radius * 0.6,
     x + Math.cos(Math.PI - angle) * radius,
     y + Math.sin(Math.PI - angle) * radius
   )
@@ -48,6 +50,12 @@ const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingCont
     y + radius * 0.25,
     x + Math.cos(angle) * radius,
     y + Math.sin(angle) * radius
+  )
+  ctx.quadraticCurveTo(
+    x + radius * 0.6,
+    y - radius * 0.6,
+    x,
+    y - radius
   )
   ctx.closePath()
   ctx.stroke()
