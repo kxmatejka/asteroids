@@ -1,5 +1,13 @@
 import React, {useRef, useEffect} from 'react'
 
+const rotateCanvas = (width: number, height: number, angle: number, ctx: CanvasRenderingContext2D) => {
+  const halfWidth = width / 2
+  const halfHeight = height / 2
+  ctx.translate(halfWidth / 2, halfHeight)
+  ctx.rotate(angle)
+  ctx.translate(-halfWidth, -halfHeight)
+}
+
 const drawBackground = (width: number, height: number, ctx: CanvasRenderingContext2D) => {
   ctx.fillStyle = '#000'
   ctx.fillRect(0, 0, width, height)
@@ -62,12 +70,26 @@ const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingCont
   ctx.fill()
 }
 
-const rotateCanvas = (width: number, height: number, angle: number, ctx: CanvasRenderingContext2D) => {
-  const halfWidth = width / 2
-  const halfHeight = height / 2
-  ctx.translate(halfWidth / 2, halfHeight)
-  ctx.rotate(angle)
-  ctx.translate(-halfWidth, -halfHeight)
+const drawAsteroid = (segments: number, radius: number, ctx: CanvasRenderingContext2D) => {
+  ctx.lineWidth = 2
+  ctx.fillStyle = '#0f0'
+
+  ctx.save()
+  ctx.beginPath()
+
+  const angle = 2 * Math.PI / segments
+  for (let i = 0; i < segments; i++) {
+    ctx.lineTo(radius, 0)
+    ctx.rotate(angle)
+  }
+
+  ctx.closePath()
+  ctx.stroke()
+
+  ctx.lineWidth = 0.5
+  ctx.arc(0, 0, radius, 0, 2*Math.PI)
+  ctx.stroke()
+  ctx.restore()
 }
 
 export const Game = () => {
@@ -84,6 +106,14 @@ export const Game = () => {
     drawGrid(width, height, ctx)
 
     drawShip(700, 700, 75, ctx)
+
+    ctx.lineWidth = 2
+    ctx.fillStyle = '#0f0'
+    ctx.save()
+    ctx.translate(150, 150)
+    drawAsteroid(7, 100, ctx)
+    ctx.restore()
+
   }, [])
 
   return (
