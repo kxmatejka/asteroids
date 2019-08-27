@@ -1,5 +1,7 @@
 import React, {useRef, useEffect} from 'react'
 
+const randomRange = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
+
 const rotateCanvas = (width: number, height: number, angle: number, ctx: CanvasRenderingContext2D) => {
   const halfWidth = width / 2
   const halfHeight = height / 2
@@ -15,6 +17,7 @@ const drawBackground = (width: number, height: number, ctx: CanvasRenderingConte
 
 const drawGrid = (width: number, height: number, ctx: CanvasRenderingContext2D) => {
   const step = 20
+  ctx.save()
   ctx.strokeStyle = '#0f0'
 
   for (let x = 0; x < width; x += step) {
@@ -32,12 +35,15 @@ const drawGrid = (width: number, height: number, ctx: CanvasRenderingContext2D) 
     ctx.lineTo(width, y + 0.5)
     ctx.stroke()
   }
+  ctx.restore()
 }
 
 const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingContext2D) => {
+  ctx.save()
   ctx.beginPath()
   ctx.lineWidth = 0.5
   ctx.fillStyle = '#0f0'
+  ctx.strokeStyle = '#0f0'
   ctx.arc(x, y, radius, 0, 2 * Math.PI)
   ctx.stroke()
 
@@ -45,7 +51,6 @@ const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingCont
 
   ctx.beginPath()
   ctx.lineWidth = 2
-  ctx.fillStyle = '#0f0'
   ctx.moveTo(x, y - radius)
   ctx.quadraticCurveTo(
     x - radius * 0.6,
@@ -68,18 +73,21 @@ const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingCont
   ctx.closePath()
   ctx.stroke()
   ctx.fill()
+  ctx.restore()
 }
 
-const drawAsteroid = (segments: number, radius: number, ctx: CanvasRenderingContext2D) => {
-  ctx.lineWidth = 2
-  ctx.fillStyle = '#0f0'
-
+const drawAsteroid = (x: number, y: number, radius: number, segments: number, ctx: CanvasRenderingContext2D) => {
   ctx.save()
+  ctx.translate(x, y)
+
+  ctx.lineWidth = 2
+  ctx.strokeStyle = '#0f0'
+
   ctx.beginPath()
 
   const angle = 2 * Math.PI / segments
   for (let i = 0; i < segments; i++) {
-    ctx.lineTo(radius, 0)
+    ctx.lineTo(randomRange(radius * 0.75, radius), 0)
     ctx.rotate(angle)
   }
 
@@ -91,6 +99,8 @@ const drawAsteroid = (segments: number, radius: number, ctx: CanvasRenderingCont
   ctx.stroke()
   ctx.restore()
 }
+
+const drawMediumAsteroid = (x: number, y: number, ctx: CanvasRenderingContext2D) => drawAsteroid(x, y, 50, randomRange(16, 32), ctx)
 
 export const Game = () => {
   const canvas = useRef(null)
@@ -105,14 +115,11 @@ export const Game = () => {
     drawBackground(width, height, ctx)
     drawGrid(width, height, ctx)
 
-    drawShip(700, 700, 75, ctx)
+    drawShip(450, 750, 25, ctx)
 
-    ctx.lineWidth = 2
-    ctx.fillStyle = '#0f0'
-    ctx.save()
-    ctx.translate(150, 150)
-    drawAsteroid(7, 100, ctx)
-    ctx.restore()
+    for (let i = 1; i<=3; i++) {
+      drawMediumAsteroid((i*250)-50, 200, ctx)
+    }
 
   }, [])
 
