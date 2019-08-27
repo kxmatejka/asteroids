@@ -2,6 +2,8 @@ import React, {useRef, useEffect} from 'react'
 
 const randomRange = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
 
+const clearCanvas = (width: number, height: number, ctx: CanvasRenderingContext2D) => ctx.clearRect(0, 0, width, height)
+
 const rotateCanvas = (width: number, height: number, angle: number, ctx: CanvasRenderingContext2D) => {
   const halfWidth = width / 2
   const halfHeight = height / 2
@@ -76,31 +78,51 @@ const drawShip = (x: number, y: number, radius: number, ctx: CanvasRenderingCont
   ctx.restore()
 }
 
-const drawAsteroid = (x: number, y: number, radius: number, segments: number, ctx: CanvasRenderingContext2D) => {
-  ctx.save()
-  ctx.translate(x, y)
+class Asteroid {
+  private readonly ctx: CanvasRenderingContext2D
+  private readonly radius: number
+  private readonly segments: number[] = []
 
-  ctx.lineWidth = 2
-  ctx.strokeStyle = '#0f0'
-
-  ctx.beginPath()
-
-  const angle = 2 * Math.PI / segments
-  for (let i = 0; i < segments; i++) {
-    ctx.lineTo(randomRange(radius * 0.75, radius), 0)
-    ctx.rotate(angle)
+  constructor (radius: number, ctx: CanvasRenderingContext2D) {
+    this.ctx = ctx
+    this.radius = radius
+    this.segments = Asteroid.generateSegments(radius)
   }
 
-  ctx.closePath()
-  ctx.stroke()
+  draw (x: number, y: number) {
+    this.ctx.save()
+    this.ctx.translate(x, y)
 
-  ctx.lineWidth = 0.5
-  ctx.arc(0, 0, radius, 0, 2*Math.PI)
-  ctx.stroke()
-  ctx.restore()
+    this.ctx.lineWidth = 2
+    this.ctx.strokeStyle = '#0f0'
+
+    this.ctx.beginPath()
+
+    const angle = 2 * Math.PI / this.segments.length
+    for (let i = 0; i < this.segments.length; i++) {
+      this.ctx.lineTo(this.segments[i], 0)
+      this.ctx.rotate(angle)
+    }
+
+    this.ctx.closePath()
+    this.ctx.stroke()
+
+    this.ctx.lineWidth = 0.5
+    this.ctx.arc(0, 0, this.radius, 0, 2 * Math.PI)
+    this.ctx.stroke()
+    this.ctx.restore()
+  }
+
+  private static generateSegments (radius: number) {
+    const segments = []
+    const numberOfSegments = randomRange(16, 32)
+    for (let i = 0; i < numberOfSegments; i++) {
+      segments.push(randomRange(radius * 0.75, radius))
+    }
+
+    return segments
+  }
 }
-
-const drawMediumAsteroid = (x: number, y: number, ctx: CanvasRenderingContext2D) => drawAsteroid(x, y, 50, randomRange(16, 32), ctx)
 
 export const Game = () => {
   const canvas = useRef(null)
@@ -112,15 +134,33 @@ export const Game = () => {
     } = canvas.current
     const ctx = canvas.current.getContext('2d')
 
-    drawBackground(width, height, ctx)
-    drawGrid(width, height, ctx)
+    const asteroid = new Asteroid(50, ctx)
 
-    drawShip(450, 750, 25, ctx)
+    let vx = 3
+    let vy = 2
+    let x = 200
+    let y = 0
 
-    for (let i = 1; i<=3; i++) {
-      drawMediumAsteroid((i*250)-50, 200, ctx)
+    const animate = () => {
+      clearCanvas(width, height, ctx)
+      drawBackground(width, height, ctx)
+      drawGrid(width, height, ctx)
+
+      drawShip(450, 750, 25, ctx)
+
+      x+=vx
+      y+=vy
+      if (x >= width + 50 || x <= -50 || y >= height + 50 || y <= -50) {
+        x = 200
+        y = 0
+      }
+
+      asteroid.draw(x, y)
+
+      window.requestAnimationFrame(animate)
     }
 
+    window.requestAnimationFrame(animate)
   }, [])
 
   return (
